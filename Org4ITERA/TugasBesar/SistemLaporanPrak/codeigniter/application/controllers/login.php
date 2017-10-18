@@ -9,32 +9,30 @@ class login extends CI_Controller
 
   public function index()
   {
-    $this->load->view('login');
+    $this->load->view('login_3');
   }
   public function procLogin()
   {
     extract($_POST);
 		$this->load->model('Model');
-		
-    $query = $this->Model->getDataUser($_POST['username'])->result_array();
 
-    if($query == null){
-       $data = array(
-         'message' => "Login Failure !!"
-       );
-    }else{
+    $query = $this->Model->getDataUser($_POST['username'])->result_array();
+    if ($username == '' || $password == '') {
+      $this->load->view('login_blank');
+    } else {
+      $flag = 0;
       foreach ($query as $key => $value) {
         # code...
         $username = $value['username'];
         $password = $value['password'];
-        if($password == $_POST['password']){
-           $this->load->view('main');
-        }else {
-          $data = array(
-            'message' => "Wrong Password"
-          );
+        if($password == $_POST['password'] && $username == $_POST['username']){
+          $this->load->view('mainn');
+          $flag = 1;
         }
       }
+      if ($flag == 0)  {
+        $this->load->view('loginfail');
+      }  
     }
   }
 }
